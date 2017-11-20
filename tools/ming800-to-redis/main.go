@@ -57,9 +57,11 @@ func ValidPhoneNum(phoneNum string) bool {
 }
 
 // ParseCategory gets campus and real category from category string.
-// Example:
-// input category: 初一（中山）
-// output: campus: 中山,category: 初一
+//
+//   Param:
+//       category: raw category string like this: 初一（中山）
+//   Return:
+//       campus, category. e.g. campus: 中山,category: 初一
 func ParseCategory(category string) (string, string) {
 	p := `^(\S+)（(\S+)）$`
 	re := regexp.MustCompile(p)
@@ -142,7 +144,7 @@ func classHandler(class ming800.Class) {
 
 	pipedConn.Do("MULTI")
 
-	category, campus := ParseCategory(class.Category)
+	campus, category := ParseCategory(class.Category)
 	if category == "" && campus == "" {
 		err = fmt.Errorf("Failed to parse category and campus: %v", class.Category)
 		return
@@ -224,7 +226,7 @@ func studentHandler(class ming800.Class, student ming800.Student) {
 	k = fmt.Sprintf("%v:names", student.PhoneNum)
 	pipedConn.Send("ZADD", k, t, student.Name)
 
-	category, campus := ParseCategory(class.Category)
+	campus, category := ParseCategory(class.Category)
 	if category == "" && campus == "" {
 		err = fmt.Errorf("Failed to parse category and campus: %v", class.Category)
 		return
