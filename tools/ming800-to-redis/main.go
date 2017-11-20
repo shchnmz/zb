@@ -214,8 +214,13 @@ func studentHandler(class ming800.Class, student ming800.Student) {
 	// Get timestamp as store for redis ordered set.
 	t := strconv.FormatInt(time.Now().UnixNano(), 10)
 
+	// Update SET: key: "students", value: student name + student phone num.
+	k := "students"
+	v := fmt.Sprintf("%v:%v", student.Name, student.PhoneNum)
+	pipedConn.Send("ZADD", k, t, v)
+
 	// Update SET: key: student name + student contact phone num, value: classes.
-	k := fmt.Sprintf("%v:%v:classes", student.Name, student.PhoneNum)
+	k = fmt.Sprintf("%v:%v:classes", student.Name, student.PhoneNum)
 	pipedConn.Send("ZADD", k, t, class.Name)
 
 	// Update SET: key: student name, value: student contact phone numbers.
@@ -234,7 +239,7 @@ func studentHandler(class ming800.Class, student ming800.Student) {
 
 	// Update SET: key: campus + category + class, value: student name + student contact phone num.
 	k = fmt.Sprintf("%v:%v:%v:students", campus, category, class.Name)
-	v := fmt.Sprintf("%v:%v", student.Name, student.PhoneNum)
+	v = fmt.Sprintf("%v:%v", student.Name, student.PhoneNum)
 	pipedConn.Send("ZADD", k, t, v)
 
 	if _, err = pipedConn.Do("EXEC"); err != nil {
