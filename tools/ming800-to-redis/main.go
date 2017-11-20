@@ -214,14 +214,22 @@ func studentHandler(class ming800.Class, student ming800.Student) {
 	// Get timestamp as store for redis ordered set.
 	t := strconv.FormatInt(time.Now().UnixNano(), 10)
 
+	// Get campus, category.
+	campus, category := ParseCategory(class.Category)
+	if category == "" && campus == "" {
+		err = fmt.Errorf("Failed to parse category and campus: %v", class.Category)
+		return
+	}
+
 	// Update SET: key: "students", value: student name + student phone num.
 	k := "students"
 	v := fmt.Sprintf("%v:%v", student.Name, student.PhoneNum)
 	pipedConn.Send("ZADD", k, t, v)
 
-	// Update SET: key: student name + student contact phone num, value: classes.
+	// Update SET: key: student name + student contact phone num, value: campus + category + class name.
 	k = fmt.Sprintf("%v:%v:classes", student.Name, student.PhoneNum)
-	pipedConn.Send("ZADD", k, t, class.Name)
+	v = fmt.Sprintf("%v:%v:%v", campus, category, class.Name)
+	pipedConn.Send("ZADD", k, t, v)
 
 	// Update SET: key: "phones", value: student contact phone num.
 	k = "phones"
@@ -230,12 +238,6 @@ func studentHandler(class ming800.Class, student ming800.Student) {
 	// Update SET: key: student contact phone num, value: student names.
 	k = fmt.Sprintf("%v:students", student.PhoneNum)
 	pipedConn.Send("ZADD", k, t, student.Name)
-
-	campus, category := ParseCategory(class.Category)
-	if category == "" && campus == "" {
-		err = fmt.Errorf("Failed to parse category and campus: %v", class.Category)
-		return
-	}
 
 	// Update SET: key: campus + category + class, value: student name + student contact phone num.
 	k = fmt.Sprintf("%v:%v:%v:students", campus, category, class.Name)
