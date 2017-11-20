@@ -223,6 +223,10 @@ func studentHandler(class ming800.Class, student ming800.Student) {
 	k = fmt.Sprintf("%v:%v:classes", student.Name, student.PhoneNum)
 	pipedConn.Send("ZADD", k, t, class.Name)
 
+	// Update SET: key: "phones", value: student contact phone num.
+	k = "phones"
+	pipedConn.Send("ZADD", k, t, student.PhoneNum)
+
 	// Update SET: key: student contact phone num, value: student names.
 	k = fmt.Sprintf("%v:students", student.PhoneNum)
 	pipedConn.Send("ZADD", k, t, student.Name)
