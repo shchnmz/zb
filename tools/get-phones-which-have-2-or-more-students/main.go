@@ -67,7 +67,7 @@ func FindPhones(redisServer, redisPassword string) error {
 	k := "phones"
 	cursor := 0
 	for {
-		if v, err = redis.Values(conn.Do("ZSCAN", k, cursor, "COUNT", "1000")); err != nil {
+		if v, err = redis.Values(conn.Do("ZSCAN", k, cursor, "COUNT", 1000)); err != nil {
 			return err
 		}
 
