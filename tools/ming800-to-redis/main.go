@@ -39,27 +39,27 @@ var (
 	}
 )
 
-// Valid8DigitTelephoneNum checks if phone number matches the format:
+// valid8DigitTelephoneNum checks if phone number matches the format:
 // 1. Starts with 8 digital number.
 // 2. Can have one or more '.' as sufix.
-func Valid8DigitTelephoneNum(phoneNum string) bool {
+func valid8DigitTelephoneNum(phoneNum string) bool {
 	p := `^\d{8}\.*$`
 	re := regexp.MustCompile(p)
 	return re.MatchString(phoneNum)
 }
 
-// ValidMobilePhoneNum checks if phone number matches the format:
+// validMobilePhoneNum checks if phone number matches the format:
 // 1. Starts with 11 digital number.
 // 2. Can have one or more '.' as sufix.
-func ValidMobilePhoneNum(phoneNum string) bool {
+func validMobilePhoneNum(phoneNum string) bool {
 	p := `^\d{11}\.*$`
 	re := regexp.MustCompile(p)
 	return re.MatchString(phoneNum)
 }
 
-// ValidPhoneNum checks if phone number is 11-digit mobile phone number or 8-digit telephone number.
-func ValidPhoneNum(phoneNum string) bool {
-	if !Valid8DigitTelephoneNum(phoneNum) && !ValidMobilePhoneNum(phoneNum) {
+// validPhoneNum checks if phone number is 11-digit mobile phone number or 8-digit telephone number.
+func validPhoneNum(phoneNum string) bool {
+	if !valid8DigitTelephoneNum(phoneNum) && !validMobilePhoneNum(phoneNum) {
 		return false
 	}
 	return true
@@ -245,7 +245,7 @@ func studentHandler(class ming800.Class, student ming800.Student) {
 	}()
 
 	// Check if phone number: 11-digit or 8-digit.
-	if !ValidPhoneNum(student.PhoneNum) {
+	if !validPhoneNum(student.PhoneNum) {
 		fmt.Printf("%s,%s,%s,%s\n", class.Category, class.Name, student.Name, student.PhoneNum)
 		return
 	}
