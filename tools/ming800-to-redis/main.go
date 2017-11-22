@@ -112,6 +112,18 @@ func main() {
 		return
 	}
 
+	// Warnning: FLUSHDB before every sync.
+	// Make sure this redis db is used to sync ming800 data only.
+	conn, err := redishelper.GetRedisConn(config.RedisServer, config.RedisPassword)
+	if err != nil {
+		return
+	}
+	defer conn.Close()
+
+	if _, err = conn.Do("FLUSHDB"); err != nil {
+		return
+	}
+
 	// Walk
 	// Write your own class and student handler functions.
 	// Class and student handler will be called while walking ming800.
@@ -153,8 +165,12 @@ func classHandler(class ming800.Class) {
 	// Get timestamp as score for redis ordered set.
 	t := strconv.FormatInt(time.Now().UnixNano(), 10)
 
+	// Update SET: key: "campuses", value: campuses.
+	k := "campuses"
+	pipedConn.Send("ZADD", k, t, campus)
+
 	// Update SET: key: campus, value: categories.
-	k := fmt.Sprintf("%v:categories", campus)
+	k = fmt.Sprintf("%v:categories", campus)
 	pipedConn.Send("ZADD", k, t, category)
 
 	// Update SET: key: category, value: campuses.
