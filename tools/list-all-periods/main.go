@@ -83,7 +83,7 @@ func listAllClasses(redisServer, redisPassword string) error {
 			}
 
 			for _, period := range periods {
-				fmt.Printf("%v,%v,%v\n", campus, category, period)
+				fmt.Printf("%v:%v:%v\n", campus, category, period)
 			}
 
 		}
