@@ -27,7 +27,16 @@ type Config struct {
 }
 
 var (
-	config Config
+	config    Config
+	dayScores = map[string]int{
+		"一": 1,
+		"二": 2,
+		"三": 3,
+		"四": 4,
+		"五": 5,
+		"六": 6,
+		"日": 7,
+	}
 )
 
 // Valid8DigitTelephoneNum checks if phone number matches the format:
@@ -139,6 +148,26 @@ func main() {
 	}
 }
 
+// getPeriodScore gets the score for the period.
+func getPeriodScore(period string) int {
+	p := `^星期(\S)(\d{2}):(\d{2})`
+	re := regexp.MustCompile(p)
+	matched := re.FindStringSubmatch(period)
+	if len(matched) != 4 {
+		return 0
+	}
+
+	day := matched[1]
+	if _, ok := dayScores[day]; !ok {
+		return 0
+	}
+
+	hour, _ := strconv.Atoi(matched[2])
+	min, _ := strconv.Atoi(matched[3])
+
+	return dayScores[day]*86400 + hour*3600 + min*60
+}
+
 func classHandler(class ming800.Class) {
 	var err error
 
@@ -184,15 +213,21 @@ func classHandler(class ming800.Class) {
 	// Update SET: key: campus + category + class, value: teachers.
 	k = fmt.Sprintf("%v:%v:%v:teachers", campus, category, class.Name)
 	for _, teacher := range class.Teachers {
-		t = strconv.FormatInt(time.Now().UnixNano(), 10)
 		pipedConn.Send("ZADD", k, t, teacher)
 	}
 
 	// Update SET: key: campus + category + class, value: periods.
 	k = fmt.Sprintf("%v:%v:%v:periods", campus, category, class.Name)
 	for _, period := range class.Periods {
-		t = strconv.FormatInt(time.Now().UnixNano(), 10)
-		pipedConn.Send("ZADD", k, t, period)
+		score := getPeriodScore(period)
+		pipedConn.Send("ZADD", k, score, period)
+	}
+
+	// Update SET: key: campus + category, value: periods.
+	k = fmt.Sprintf("%v:%v:periods", campus, category)
+	for _, period := range class.Periods {
+		score := getPeriodScore(period)
+		pipedConn.Send("ZADD", k, score, period)
 	}
 
 	if _, err = pipedConn.Do("EXEC"); err != nil {
