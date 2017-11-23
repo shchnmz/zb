@@ -17,6 +17,7 @@ var (
 	}
 )
 
+// loadBlacklists loads the blacklists for students' transfer.
 func loadBlacklists() (map[string][]string, error) {
 	blacklists := map[string][]string{}
 
