@@ -6,10 +6,12 @@ import (
 	"io/ioutil"
 	"path"
 
+	"github.com/gin-gonic/gin"
 	"github.com/northbright/pathhelper"
 )
 
 type Config struct {
+	ServerAddr    string `json:"server_addr"`
 	RedisServer   string `json:"redis_server"`
 	RedisPassword string `json:"redis_password"`
 }
@@ -48,6 +50,23 @@ func main() {
 			fmt.Printf("%v\n", data)
 		}
 	}
+
+	r := gin.Default()
+
+	// Core APIs.
+
+	//r.POST("/employee", addEmployee)
+	// Set employee
+	//r.PUT("/employee/:id", setEmployee)
+
+	// Get student names by phone num.
+	r.GET("/get-names-by-phone-num/:phone_num", getNamesByPhoneNum)
+
+	// Get classes by name and phone num.
+	r.GET("/get-classes-by-name-and-phone-num/:name/:phone_num", getClassesByNameAndPhoneNum)
+
+	r.Run(config.ServerAddr)
+
 }
 
 // init initializes path variables.
