@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/northbright/redishelper"
 	"github.com/shchnmz/ming"
+	"github.com/shchnmz/zb"
 )
 
 // TransferRequest represents the transfer request information.
@@ -43,24 +44,13 @@ func getNamesByPhoneNum(c *gin.Context) {
 
 	phoneNum := c.Param("phone_num")
 	if !ming.ValidPhoneNum(phoneNum) {
-		err = fmt.Errorf("invalid phone num: %v", phoneNum)
 		statusCode = 400
 		errMsg = "invalid phone num"
 		return
 	}
 
-	conn, err := redishelper.GetRedisConn(config.RedisServer, config.RedisPassword)
-	if err != nil {
-		err = fmt.Errorf("redishelper.GetRedisConn() error: %v", err)
-		statusCode = 500
-		errMsg = "internal server error"
-		return
-	}
-	defer conn.Close()
-
-	k := fmt.Sprintf("%v:students", phoneNum)
-	names, err = redis.Strings(conn.Do("ZRANGE", k, 0, -1))
-	if err != nil {
+	z := zb.NewZB(config.RedisServer, config.RedisPassword)
+	if names, err = z.GetNamesByPhoneNum(phoneNum); err != nil {
 		statusCode = 500
 		errMsg = "internal server error"
 		return
