@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"path"
 
 	"github.com/gin-gonic/gin"
@@ -19,7 +20,6 @@ type Config struct {
 var (
 	currentDir, configFile string
 	config                 Config
-	blacklists             map[string][]string
 )
 
 func main() {
@@ -29,26 +29,13 @@ func main() {
 
 	defer func() {
 		if err != nil {
-			fmt.Printf("error: %v\n", err)
+			log.Printf("error: %v\n", err)
 		}
 	}()
 
 	if err = loadConfig(); err != nil {
 		err = fmt.Errorf("loadConfig() error: %v", err)
 		return
-	}
-
-	// Load blacklists.
-	if blacklists, err = loadBlacklists(); err != nil {
-		err = fmt.Errorf("loadBacklists() error: %v", err)
-		return
-	}
-
-	for k, v := range blacklists {
-		fmt.Printf("blacklist: %v\n", k)
-		for _, data := range v {
-			fmt.Printf("%v\n", data)
-		}
 	}
 
 	r := gin.Default()
@@ -66,7 +53,6 @@ func main() {
 	r.GET("/get-classes-by-name-and-phone-num/:name/:phone_num", getClassesByNameAndPhoneNum)
 
 	r.Run(config.ServerAddr)
-
 }
 
 // init initializes path variables.
