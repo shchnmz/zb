@@ -9,6 +9,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/northbright/pathhelper"
+	"github.com/shchnmz/ming"
+	"github.com/shchnmz/zb"
 )
 
 type Config struct {
@@ -20,6 +22,7 @@ type Config struct {
 var (
 	currentDir, configFile string
 	config                 Config
+	db                     zb.DB
 )
 
 func main() {
@@ -38,6 +41,9 @@ func main() {
 		return
 	}
 
+	// Init DB.
+	db = zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
+
 	r := gin.Default()
 
 	// Core APIs.
@@ -51,6 +57,9 @@ func main() {
 
 	// Get classes by name and phone num.
 	r.GET("/get-classes-by-name-and-phone-num/:name/:phone_num", getClassesByNameAndPhoneNum)
+
+	// Get available periods for the category of the class.
+	r.GET("/get-available-periods/:class", getAvailablePeriods)
 
 	r.Run(config.ServerAddr)
 }
