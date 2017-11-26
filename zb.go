@@ -25,21 +25,16 @@ func NewZB(redisServer, redisPassword string) ZB {
 
 // GetNamesByPhoneNum searchs student names by phone number.
 func (z *ZB) GetNamesByPhoneNum(phoneNum string) ([]string, error) {
-	var (
-		err   error
-		names []string
-	)
-
 	conn, err := redishelper.GetRedisConn(z.RedisServer, z.RedisPassword)
 	if err != nil {
-		return names, err
+		return []string{}, err
 	}
 	defer conn.Close()
 
 	k := fmt.Sprintf("ming:%v:students", phoneNum)
-	names, err = redis.Strings(conn.Do("ZRANGE", k, 0, -1))
+	names, err := redis.Strings(conn.Do("ZRANGE", k, 0, -1))
 	if err != nil {
-		return names, err
+		return []string{}, err
 	}
 
 	return names, nil
@@ -47,21 +42,16 @@ func (z *ZB) GetNamesByPhoneNum(phoneNum string) ([]string, error) {
 
 // GetClassesByNameAndPhoneNum searchs classes by student name and phone number.
 func (z *ZB) GetClassesByNameAndPhoneNum(name, phoneNum string) ([]string, error) {
-	var (
-		err     error
-		classes []string
-	)
-
 	conn, err := redishelper.GetRedisConn(z.RedisServer, z.RedisPassword)
 	if err != nil {
-		return classes, err
+		return []string{}, err
 	}
 	defer conn.Close()
 
 	k := fmt.Sprintf("ming:%v:%v:classes", name, phoneNum)
-	classes, err = redis.Strings(conn.Do("ZRANGE", k, 0, -1))
+	classes, err := redis.Strings(conn.Do("ZRANGE", k, 0, -1))
 	if err != nil {
-		return classes, err
+		return []string{}, err
 	}
 
 	return classes, nil
