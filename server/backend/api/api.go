@@ -1,13 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	//"strings"
 
-	"github.com/garyburd/redigo/redis"
 	"github.com/gin-gonic/gin"
-	"github.com/northbright/redishelper"
 	"github.com/shchnmz/ming"
 	"github.com/shchnmz/zb"
 )
@@ -81,7 +78,6 @@ func getClassesByNameAndPhoneNum(c *gin.Context) {
 
 	name := c.Param("name")
 	if len(name) == 0 {
-		err = fmt.Errorf("empty name")
 		statusCode = 400
 		errMsg = "empty name"
 		return
@@ -89,24 +85,13 @@ func getClassesByNameAndPhoneNum(c *gin.Context) {
 
 	phoneNum := c.Param("phone_num")
 	if !ming.ValidPhoneNum(phoneNum) {
-		err = fmt.Errorf("invalid phone num: %v", phoneNum)
 		statusCode = 400
 		errMsg = "Invalid phone num"
 		return
 	}
 
-	conn, err := redishelper.GetRedisConn(config.RedisServer, config.RedisPassword)
-	if err != nil {
-		err = fmt.Errorf("redishelper.GetRedisConn() error: %v", err)
-		statusCode = 500
-		errMsg = "internal server error"
-		return
-	}
-	defer conn.Close()
-
-	k := fmt.Sprintf("%v:%v:classes", name, phoneNum)
-	classes, err = redis.Strings(conn.Do("ZRANGE", k, 0, -1))
-	if err != nil {
+	z := zb.NewZB(config.RedisServer, config.RedisPassword)
+	if classes, err = z.GetClassesByNameAndPhoneNum(name, phoneNum); err != nil {
 		statusCode = 500
 		errMsg = "internal server error"
 		return
