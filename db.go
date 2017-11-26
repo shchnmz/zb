@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/northbright/pathhelper"
 	"github.com/northbright/redishelper"
 	"github.com/shchnmz/ming"
@@ -153,4 +154,53 @@ func (db *DB) LoadBlacklist(file string, blacklist *Blacklist) error {
 
 	// Set blacklist to redis.
 	return db.SetBlacklist(blacklist.List)
+}
+
+// IsFromClassInBlacklist checks if the class transfer from is in blacklist.
+func (db *DB) IsFromClassInBlacklist(campus, category, class string) (bool, error) {
+	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	if err != nil {
+		return false, err
+	}
+	defer conn.Close()
+
+	k := "zb:blacklist:from_campuses"
+	m := campus
+	score, err := redis.String(conn.Do("ZSCORE", k, m))
+	if err != nil && err != redis.ErrNil {
+		return false, err
+	}
+
+	if score != "" {
+		return true, nil
+	}
+
+	period, err := db.GetClassPeriod(campus, category, class)
+	if err != nil {
+		return false, err
+	}
+
+	k = "zb:blacklist:from_periods"
+	m = fmt.Sprintf("%v:%v:%v", campus, category, period)
+	score, err = redis.String(conn.Do("ZSCORE", k, m))
+	if err != nil && err != redis.ErrNil {
+		return false, err
+	}
+
+	if score != "" {
+		return true, nil
+	}
+
+	k = "zb:blacklist:from_classes"
+	m = fmt.Sprintf("%v:%v:%v", campus, category, class)
+	score, err = redis.String(conn.Do("ZSCORE", k, m))
+	if err != nil && err != redis.ErrNil {
+		return false, err
+	}
+
+	if score != "" {
+		return true, nil
+	}
+
+	return false, nil
 }
