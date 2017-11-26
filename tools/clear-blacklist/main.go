@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/northbright/pathhelper"
+	"github.com/shchnmz/ming"
 	"github.com/shchnmz/zb"
 )
 
@@ -35,7 +36,8 @@ func main() {
 		return
 	}
 
-	if err = zb.ClearBlacklist(config.RedisServer, config.RedisPassword); err != nil {
+	db := zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
+	if err = db.ClearBlacklist(); err != nil {
 		return
 	}
 }

@@ -10,7 +10,17 @@ import (
 
 	"github.com/northbright/pathhelper"
 	"github.com/northbright/redishelper"
+	"github.com/shchnmz/ming"
 )
+
+// DB represents database to store transfer data.
+// It's wrapper of ming.DB.
+// Usage:
+// import "github.com/shchnmz/ming"
+// db := zb.DB{ming.DB{redisServer, redisPassword}}
+type DB struct {
+	ming.DB
+}
 
 // Blacklist represents the blacklist of student transter.
 type Blacklist struct {
@@ -31,14 +41,12 @@ var (
 // SetBlacklist updates the backlist in redis.
 //
 // Params:
-//     redisServer: redis server address. e.g. ":6379"
-//     redisPassword: redis password.
 //     blacklist:
 //       There're following types of blacklist:
 //       "from_campuses", "from_periods", "from_classes",
 //       "to_campuses", "to_periods", "to_classes".
-func SetBlacklist(redisServer, redisPassword string, blacklist map[string][]string) error {
-	pipedConn, err := redishelper.GetRedisConn(redisServer, redisPassword)
+func (db *DB) SetBlacklist(blacklist map[string][]string) error {
+	pipedConn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return err
 	}
@@ -70,12 +78,8 @@ func SetBlacklist(redisServer, redisPassword string, blacklist map[string][]stri
 }
 
 // ClearBlacklist clear the backlist in redis.
-//
-// Params:
-//     redisServer: redis server address. e.g. ":6379"
-//     redisPassword: redis password.
-func ClearBlacklist(redisServer, redisPassword string) error {
-	pipedConn, err := redishelper.GetRedisConn(redisServer, redisPassword)
+func (db *DB) ClearBlacklist() error {
+	pipedConn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return err
 	}
@@ -108,8 +112,6 @@ func ValidBlacklist(blacklist map[string][]string) bool {
 // LoadBlacklist loads the blacklist from JSON file then set it to redis.
 //
 // Params:
-//     redisServer: redis server address. e.g. ":6379".
-//     redisPassword: redis password.
 //     file: JSON file name.
 //       There're following types of blacklist:
 //       "from_campuses", "from_periods", "from_classes",
@@ -130,7 +132,7 @@ func ValidBlacklist(blacklist map[string][]string) bool {
 //             "to_classes":[]
 //         }
 //       }
-func LoadBlacklist(redisServer, redisPassword, file string, blacklist *Blacklist) error {
+func (db *DB) LoadBlacklist(file string, blacklist *Blacklist) error {
 	var (
 		err        error
 		buf        []byte
@@ -150,5 +152,5 @@ func LoadBlacklist(redisServer, redisPassword, file string, blacklist *Blacklist
 	}
 
 	// Set blacklist to redis.
-	return SetBlacklist(redisServer, redisPassword, blacklist.List)
+	return db.SetBlacklist(blacklist.List)
 }

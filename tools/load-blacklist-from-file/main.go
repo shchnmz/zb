@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/northbright/pathhelper"
+	"github.com/shchnmz/ming"
 	"github.com/shchnmz/zb"
 )
 
@@ -36,7 +37,8 @@ func main() {
 		return
 	}
 
-	if err = zb.LoadBlacklist(config.RedisServer, config.RedisPassword, "blacklist.json", &blacklist); err != nil {
+	db := zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
+	if err = db.LoadBlacklist("blacklist.json", &blacklist); err != nil {
 		return
 	}
 }
