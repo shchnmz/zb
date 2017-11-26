@@ -46,8 +46,8 @@ func getNamesByPhoneNum(c *gin.Context) {
 		return
 	}
 
-	z := zb.NewZB(config.RedisServer, config.RedisPassword)
-	if names, err = z.GetNamesByPhoneNum(phoneNum); err != nil {
+	db := zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
+	if names, err = db.GetNamesByPhoneNum(phoneNum); err != nil {
 		statusCode = 500
 		errMsg = "internal server error"
 		return
@@ -90,8 +90,8 @@ func getClassesByNameAndPhoneNum(c *gin.Context) {
 		return
 	}
 
-	z := zb.NewZB(config.RedisServer, config.RedisPassword)
-	if classes, err = z.GetClassesByNameAndPhoneNum(name, phoneNum); err != nil {
+	db := zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
+	if classes, err = db.GetClassesByNameAndPhoneNum(name, phoneNum); err != nil {
 		statusCode = 500
 		errMsg = "internal server error"
 		return
