@@ -209,3 +209,39 @@ func (db *DB) IsFromClassInBlacklist(campus, category, class string) (bool, erro
 
 	return false, nil
 }
+
+// IsToPeriodInBlacklist checks if the period transfer to is in blacklist.
+func (db *DB) IsToPeriodInBlacklist(campus, category, period string) (bool, error) {
+	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	if err != nil {
+		return false, err
+	}
+	defer conn.Close()
+
+	// Workflow: check campus -> check period.
+	// Step 1. Check if campus is in blacklist.
+	k := "zb:blacklist:to_campuses"
+	m := campus
+	score, err := redis.String(conn.Do("ZSCORE", k, m))
+	if err != nil && err != redis.ErrNil {
+		return false, err
+	}
+
+	if score != "" {
+		return true, nil
+	}
+
+	// Step 2. Check if period is in blacklist.
+	k = "zb:blacklist:to_periods"
+	m = fmt.Sprintf("%v:%v:%v", campus, category, period)
+	score, err = redis.String(conn.Do("ZSCORE", k, m))
+	if err != nil && err != redis.ErrNil {
+		return false, err
+	}
+
+	if score != "" {
+		return true, nil
+	}
+
+	return false, nil
+}
