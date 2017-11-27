@@ -164,6 +164,8 @@ func (db *DB) IsFromClassInBlacklist(campus, category, class string) (bool, erro
 	}
 	defer conn.Close()
 
+	// Workflow: check campus -> check period -> check class.
+	// Step 1. Check if campus is in blacklist.
 	k := "zb:blacklist:from_campuses"
 	m := campus
 	score, err := redis.String(conn.Do("ZSCORE", k, m))
@@ -175,11 +177,13 @@ func (db *DB) IsFromClassInBlacklist(campus, category, class string) (bool, erro
 		return true, nil
 	}
 
+	// Get period if the class.
 	period, err := db.GetClassPeriod(campus, category, class)
 	if err != nil {
 		return false, err
 	}
 
+	// Step 2. Check if period is in blacklist.
 	k = "zb:blacklist:from_periods"
 	m = fmt.Sprintf("%v:%v:%v", campus, category, period)
 	score, err = redis.String(conn.Do("ZSCORE", k, m))
@@ -191,6 +195,7 @@ func (db *DB) IsFromClassInBlacklist(campus, category, class string) (bool, erro
 		return true, nil
 	}
 
+	// Step 3. Check if class is in blacklist.
 	k = "zb:blacklist:from_classes"
 	m = fmt.Sprintf("%v:%v:%v", campus, category, class)
 	score, err = redis.String(conn.Do("ZSCORE", k, m))
