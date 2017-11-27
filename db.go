@@ -28,6 +28,19 @@ type Blacklist struct {
 	List map[string][]string `json:"blacklist"`
 }
 
+// Record represents the transfer record.
+type Record struct {
+	Name       string `redis:"name"`
+	PhoneNum   string `redis:"phone_num"`
+	Category   string `redis:"category"`
+	FromCampus string `redis:"from_campus"`
+	FromClass  string `redis:"from_class"`
+	FromPeriod string `redis:"from_period"`
+	ToCampus   string `redis:"to_campus"`
+	ToPeriod   string `redis:"to_period"`
+	Time       string `redis:"time"`
+}
+
 var (
 	blacklistTypes = map[string]string{
 		"from_campuses": "can't transfer students from the campuses",
@@ -311,4 +324,28 @@ func (db *DB) GetAvailblePeriodsOfCategory(category string) (map[string][]string
 	}
 
 	return filteredCampusPeriods, nil
+}
+
+// SetRecord sets the record in redis.
+func (db *DB) SetRecord(r Record) error {
+	pipedConn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	if err != nil {
+		return err
+	}
+	defer pipedConn.Close()
+
+	pipedConn.Send("MULTI")
+
+	k := fmt.Sprintf("zb:record:%v:%v", r.Name, r.PhoneNum)
+	pipedConn.Send("HMSET", k, "name", r.Name, "phone_num", r.PhoneNum, "category", r.Category, "from_campus", r.FromCampus, "from_class", r.FromClass, "from_period", r.FromPeriod, "to_campus", r.ToCampus, "to_period", r.ToPeriod, "time", r.Time)
+
+	timestamp := time.Now().Unix()
+	key := "zb:records"
+	m := k
+	pipedConn.Send("ZADD", key, timestamp, m)
+
+	if _, err = pipedConn.Do("EXEC"); err != nil {
+		return err
+	}
+	return nil
 }

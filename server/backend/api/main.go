@@ -48,10 +48,6 @@ func main() {
 
 	// Core APIs.
 
-	//r.POST("/employee", addEmployee)
-	// Set employee
-	//r.PUT("/employee/:id", setEmployee)
-
 	// Get student names by phone num.
 	r.GET("/get-names-by-phone-num/:phone_num", getNamesByPhoneNum)
 
@@ -60,6 +56,9 @@ func main() {
 
 	// Get available periods for the category of the class.
 	r.GET("/get-available-periods/:class", getAvailablePeriods)
+
+	// Post request.
+	r.POST("/request", postRequest)
 
 	r.Run(config.ServerAddr)
 }
