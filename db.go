@@ -245,3 +245,70 @@ func (db *DB) IsToPeriodInBlacklist(campus, category, period string) (bool, erro
 
 	return false, nil
 }
+
+// FilterToPeriodsOfCategoryWithBlacklist filters periods of the category in blacklist.
+//
+// Params:
+//     category: category of the periods.
+//     campusPeriods: map contains periods to filter. key: campus, value: periods.
+// Returns:
+//     filtered campus - periods map. key: campus, value: periods.
+func (db *DB) FilterToPeriodsOfCategoryWithBlacklist(category string, campusPeriods map[string][]string) (map[string][]string, error) {
+	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	if err != nil {
+		return map[string][]string{}, err
+	}
+	defer conn.Close()
+
+	filteredCampusPeriods := map[string][]string{}
+	for campus, periods := range campusPeriods {
+		// Step 1. Check if campus is in blacklist.
+		k := "zb:blacklist:to_campuses"
+		m := campus
+		score, err := redis.String(conn.Do("ZSCORE", k, m))
+		if err != nil && err != redis.ErrNil {
+			return map[string][]string{}, err
+		}
+
+		// Skip if campus is in blacklist.
+		if score != "" {
+			continue
+		}
+
+		// Step 2. Check if period is in blacklist.
+		for _, period := range periods {
+			k := "zb:blacklist:to_periods"
+			m := fmt.Sprintf("%v:%v:%v", campus, category, period)
+			score, err := redis.String(conn.Do("ZSCORE", k, m))
+			if err != nil && err != redis.ErrNil {
+				return map[string][]string{}, err
+			}
+
+			if score == "" {
+				filteredCampusPeriods[campus] = append(filteredCampusPeriods[campus], period)
+			}
+		}
+	}
+	return filteredCampusPeriods, nil
+}
+
+// GetAvailblePeriodsOfCategory gets category's periods for all campuses, filtered with blacklist.
+//
+// Params:
+//     category: category which you want to get all periods.
+// Returns:
+//     a map contains all periods. key: campus, value: periods.
+func (db *DB) GetAvailblePeriodsOfCategory(category string) (map[string][]string, error) {
+	// Get all periods of the category.
+	campusPeriods, err := db.GetAllPeriodsOfCategory(category)
+	if err != nil {
+		return map[string][]string{}, err
+	}
+
+	filteredCampusPeriods, err := db.FilterToPeriodsOfCategoryWithBlacklist(category, campusPeriods)
+	if err != nil {
+		return map[string][]string{}, err
+	}
+
+	return filteredCampusPeriods, nil
+}
