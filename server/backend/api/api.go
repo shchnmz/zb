@@ -154,7 +154,8 @@ func getAvailablePeriods(c *gin.Context) {
 		return
 	}
 
-	if campusPeriods, err = db.GetAllPeriodsOfCategory(category); err != nil {
+	// Get all periods of the category.
+	if campusPeriods, err = db.GetAvailblePeriodsOfCategory(category); err != nil {
 		statusCode = 500
 		errMsg = "internal server error"
 		return
