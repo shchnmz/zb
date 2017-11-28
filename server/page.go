@@ -6,6 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shchnmz/ming"
+	"github.com/shchnmz/zb"
 )
 
 func home(c *gin.Context) {
@@ -15,5 +17,19 @@ func home(c *gin.Context) {
 }
 
 func admin(c *gin.Context) {
+	var records []zb.Record
 
+	defer func() {
+		c.HTML(http.StatusOK, "admin.tmpl", gin.H{
+			"title":   "转班申请",
+			"count":   len(records),
+			"records": records,
+		})
+	}()
+
+	db := &zb.DB{ming.DB{redisAddr, redisPassword}}
+	records, err := db.GetAllRecords()
+	if err != nil {
+		return
+	}
 }

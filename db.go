@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"path"
 	"strconv"
 	"time"
@@ -348,4 +349,39 @@ func (db *DB) SetRecord(r Record) error {
 		return err
 	}
 	return nil
+}
+
+func (db *DB) GetAllRecords() ([]Record, error) {
+	var records []Record
+
+	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	if err != nil {
+		return []Record{}, err
+	}
+	defer conn.Close()
+
+	k := "zb:records"
+	keys, err := redis.Strings(conn.Do("ZRANGE", k, 0, -1))
+	if err != nil {
+		return []Record{}, err
+	}
+
+	log.Printf("keys: %v", keys)
+	for _, key := range keys {
+		values, err := redis.Values(conn.Do("HGETALL", key))
+		if err != nil {
+			log.Printf("values error: %v", err)
+			return []Record{}, err
+		}
+
+		record := Record{}
+		if err = redis.ScanStruct(values, &record); err != nil {
+			log.Printf("Scanstruct() error: %v", err)
+			return []Record{}, err
+		}
+
+		records = append(records, record)
+	}
+	return records, nil
+
 }

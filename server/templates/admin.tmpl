@@ -17,10 +17,11 @@
   </div>
 
   <div data-role="content">
-          <div id="msg"> {{ .msg }} </div>
-          {{range .Records }}
-		  <div>{{ .Data }}</div>
-          {{end}} 
+          <div id="records">
+          {{range .records }}
+		  <div>{{ .Name }},{{ .PhoneNum }},年级:{{ .Category }},原班级:{{ .FromClass }},原时间段:{{ .FromPeriod }},转入校区:{{ .ToCampus }},转入时间段:{{ .ToPeriod }},{{ .Time }}</div>
+          {{end}}
+          </div>
   </div>
 
   <div data-role="footer">
