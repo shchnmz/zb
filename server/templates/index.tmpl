@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ .title }}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel='stylesheet' id='style-css'  href='static/css/jquery.mobile-1.4.5.min.css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='static/css/zb.css' media='all' />
+  <script type="text/javascript" src="static/js/jquery-1.12.1.min.js"></script>
+  <script type="text/javascript" src="static/js/jquery.mobile-1.4.5.min.js"></script>
+  <script type="text/javascript" src="static/js/zb.js"></script>
+</head>
+<body>
+
+<div data-role="page" id="page1">
+  <div data-role="header">
+    <h1>转班申请</h1>
+  </div>
+
+  <div data-role="content">
+        <label for="phone_num">联系电话：</label>
+        <input type="text" name="phone_num" id="phone_num" placeholder="联系电话...">
+
+	<button id="queryBtn">查询</button>
+
+	<label for="students">学生姓名</label>
+	<select name="students" id="students">
+        </select>
+
+        <label for="classes">当前班级</label>
+        <select name="classes" id="classes">
+        </select>	
+
+        <label for="to_campuses">可选转班校区：</label>
+	<select name="to_campuses" id="to_campuses">
+	</select>
+
+        <label for="to_periods">可选转班时段：</label>
+        <select name="to_periods" id="to_periods">
+        </select>
+
+	<button id="submitBtn">提交申请</button>
+  </div>
+</div>

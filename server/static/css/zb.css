@@ -1,0 +1,11 @@
+h1 {
+    color: #ff0000; !important
+}
+
+.center-wrapper{
+    text-align: center;
+}
+
+.center-wrapper * {
+    margin: 0 auto;
+}

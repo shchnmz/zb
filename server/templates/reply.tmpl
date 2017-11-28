@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ .title }}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel='stylesheet' id='style-css'  href='static/css/jquery.mobile-1.4.5.min.css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='static/css/zb.css' media='all' />
+  <script type="text/javascript" src="static/js/jquery-1.12.1.min.js"></script>
+  <script type="text/javascript" src="static/js/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+
+<div data-role="page" id="page1">
+  <div data-role="header">
+	  <h1>{{ .title }}</h1>
+  </div>
+
+  <div data-role="content">
+	  <h3>{{ .msg }}</h3>
+  </div>
+
+  <div data-role="footer">
+  </div>
+</div>   
+
+</body>
+</html>
+
