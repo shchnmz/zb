@@ -156,7 +156,10 @@ $(document).ready(function () {
 			});
                         if (data.names.length > 0) {
 		            studentsObj.val(data.names[0]).change();
-                        }
+                        } else {
+                            alert("查询失败: " + data.err_msg + "\n" + "请更换其它可能预留的联系电话\n" + "如果依旧不能找到绑定的学生，请至报名处修改联系电话.");
+			}
+
 		} else {
        			console.log(data.err_msg);
 			alert("查询失败: " + data.err_msg + "\n" + "请更换其它可能预留的联系电话\n" + "如果依旧不能找到绑定的学生，请至报名处修改联系电话.");
