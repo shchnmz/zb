@@ -37,7 +37,7 @@ func getNamesByPhoneNum(c *gin.Context) {
 			log.Printf("getNamesByPhone() errMsg: %v", errMsg)
 		}
 
-		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "data": gin.H{"success": success, "names": names}})
+		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "names": names})
 	}()
 
 	phoneNum := c.Param("phone_num")
@@ -71,7 +71,7 @@ func getClassesByNameAndPhoneNum(c *gin.Context) {
 			log.Printf("getClassByNameAndPhoneNum() errMsg: %v", errMsg)
 		}
 
-		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "data": gin.H{"success": success, "classes": classes}})
+		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "classes": classes})
 	}()
 
 	name := c.Param("name")
@@ -113,7 +113,7 @@ func getAvailablePeriods(c *gin.Context) {
 			log.Printf("getAvailablePeriods() errMsg: %v", errMsg)
 		}
 
-		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "data": gin.H{"success": success, "campus_periods": campusPeriods}})
+		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "campus_periods": campusPeriods})
 	}()
 
 	classValue := c.Param("class")
@@ -172,7 +172,7 @@ func postRequest(c *gin.Context) {
 			log.Printf("postRequest() errMsg: %v", errMsg)
 		}
 
-		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "data": gin.H{"success": success, "request": request, "record": record}})
+		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "request": request, "record": record})
 	}()
 
 	if err = c.BindJSON(&request); err != nil {
