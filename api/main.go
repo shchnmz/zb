@@ -49,16 +49,16 @@ func main() {
 	// Core APIs.
 
 	// Get student names by phone num.
-	r.GET("/get-names-by-phone-num/:phone_num", getNamesByPhoneNum)
+	r.GET("/api/get-names-by-phone-num/:phone_num", getNamesByPhoneNum)
 
 	// Get classes by name and phone num.
-	r.GET("/get-classes-by-name-and-phone-num/:name/:phone_num", getClassesByNameAndPhoneNum)
+	r.GET("/api/get-classes-by-name-and-phone-num/:name/:phone_num", getClassesByNameAndPhoneNum)
 
 	// Get available periods for the category of the class.
-	r.GET("/get-available-periods/:class", getAvailablePeriods)
+	r.GET("/api/get-available-periods/:class", getAvailablePeriods)
 
 	// Post request.
-	r.POST("/request", postRequest)
+	r.POST("/api/request", postRequest)
 
 	r.Run(config.ServerAddr)
 }
