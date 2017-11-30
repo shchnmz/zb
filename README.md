@@ -12,7 +12,7 @@ zb是一个基于[明日系统导出至redis中的学校数据](https://github.c
 
 #### 生产环境搭建
 * Redis安装
-  [Install and Configure Redis on CentOS 7](https://github.com/northbright/Notes/blob/master/Redis/Install/Install_and_Config_Redis_on_CentOS.md)
+  * [Install and Configure Redis on CentOS 7](https://github.com/northbright/Notes/blob/master/Redis/Install/Install_and_Config_Redis_on_CentOS.md)
 * Nginx反向代理设置
 
         // sudo vi /etc/nginx/nginx.conf
@@ -31,7 +31,7 @@ zb是一个基于[明日系统导出至redis中的学校数据](https://github.c
         }
 
 * API服务器，应用服务器作为系统服务自动启动
-  [Configure Binary as systemd Service on CentOS 7](https://github.com/northbright/Notes/blob/master/Linux/CentOS/service/config-binary-as-systemd-service-on-centos-7/config-binary-as-systemd-service-on-centos-7.md)
+  * [Configure Binary as systemd Service on CentOS 7](https://github.com/northbright/Notes/blob/master/Linux/CentOS/service/config-binary-as-systemd-service-on-centos-7/config-binary-as-systemd-service-on-centos-7.md)
 
 #### Documentation
 * [API References](https://godoc.org/github.com/shchnmz/zb)
