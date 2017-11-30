@@ -19,6 +19,7 @@ install:
   - go get github.com/northbright/ming800
   - go get github.com/northbright/redishelper
   - go get github.com/northbright/pathhelper
+  - go get github.com/shchnmz/ming
 
 script:
   - go build
