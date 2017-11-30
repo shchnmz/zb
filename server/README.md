@@ -23,3 +23,6 @@ server是提供转班服务以及管理的HTTP服务器。它是使用[Golang](h
 
         ./server
 
+#### 配置禁止转班的信息
+* [从配置文件中加载转班禁止信息到redis中](../tools/load-blacklist-from-file)
+* [从redis数据库中清除转班禁止信息](../tools/clear-blacklist)
