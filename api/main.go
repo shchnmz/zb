@@ -13,6 +13,7 @@ import (
 	"github.com/shchnmz/zb"
 )
 
+// Config represents the app settings.
 type Config struct {
 	ServerAddr    string `json:"server_addr"`
 	RedisServer   string `json:"redis_server"`
