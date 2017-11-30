@@ -351,6 +351,7 @@ func (db *DB) SetRecord(r Record) error {
 	return nil
 }
 
+// GetAllRecords gets all records in redis.
 func (db *DB) GetAllRecords() ([]Record, error) {
 	var records []Record
 
