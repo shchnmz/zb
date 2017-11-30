@@ -30,6 +30,9 @@ zb是一个基于[明日系统导出至redis中的学校数据](https://github.c
             }
         }
 
+* Nginx反向代理如果出现502错误的修复
+  * [Fix 502 Error when Use Nginx as Reverse Proxy](https://github.com/northbright/Notes/blob/master/nginx/fix-502-error-when-use-nginx-as-reverse-proxy.md)
+
 * API服务器，应用服务器作为系统服务自动启动
   * [Configure Binary as systemd Service on CentOS 7](https://github.com/northbright/Notes/blob/master/Linux/CentOS/service/config-binary-as-systemd-service-on-centos-7/config-binary-as-systemd-service-on-centos-7.md)
 
