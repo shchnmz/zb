@@ -1,6 +1,6 @@
 # clear-blacklist
 
-clear-blacklist是一个从redis数据库中清除转班禁止信息的。它是使用[Golang](https://golang.org)写的。
+clear-blacklist是一个从redis数据库中清除转班禁止信息的程序。它是使用[Golang](https://golang.org)写的。
 
 #### 如何使用
 1. 确认已经运行过[ming800-to-redis](../ming800-to-redis)将明日系统的数据导入到redis中。
