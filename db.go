@@ -384,5 +384,4 @@ func (db *DB) GetAllRecords() ([]Record, error) {
 		records = append(records, record)
 	}
 	return records, nil
-
 }
