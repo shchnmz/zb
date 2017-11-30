@@ -20,6 +20,7 @@ install:
   - go get github.com/northbright/redishelper
   - go get github.com/northbright/pathhelper
   - go get github.com/shchnmz/ming
+  - go get github.com/gin-gonic/gin
 
 script:
   - go build
