@@ -102,7 +102,7 @@ func (db *DB) ClearBlacklist() error {
 
 	pipedConn.Send("MULTI")
 
-	for k, _ := range blacklistTypes {
+	for k := range blacklistTypes {
 		key := fmt.Sprintf("zb:blacklist:%v", k)
 		pipedConn.Send("DEL", key)
 	}
@@ -116,7 +116,7 @@ func (db *DB) ClearBlacklist() error {
 
 // ValidBlacklist validates the backlist.
 func ValidBlacklist(blacklist map[string][]string) bool {
-	for k, _ := range blacklist {
+	for k := range blacklist {
 		if _, ok := blacklistTypes[k]; !ok {
 			return false
 		}
