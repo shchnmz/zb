@@ -1,0 +1,26 @@
+language: go
+
+go:
+  - 1.4.3
+  - 1.5
+  - 1.6
+  - 1.7
+  - 1.8
+  - 1.9
+  - tip
+
+services:
+  - redis-server
+
+before_install:
+
+install:
+  - go get github.com/garyburd/redigo/redis
+  - go get github.com/northbright/ming800
+  - go get github.com/northbright/redishelper
+  - go get github.com/northbright/pathhelper
+
+script:
+  - go build
+  - cd api && go build && cd ../
+  - cd server && go build && cd ../
