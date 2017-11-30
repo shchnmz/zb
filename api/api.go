@@ -19,6 +19,7 @@ type Request struct {
 	ToPeriod  string `json:"to_period" binding:"required"`
 }
 
+// getNamesByPhoneNum is the handler to get the student names by phone number.
 func getNamesByPhoneNum(c *gin.Context) {
 	var (
 		err     error
@@ -54,6 +55,7 @@ func getNamesByPhoneNum(c *gin.Context) {
 	log.Printf("phone num: %v, names: %v", phoneNum, names)
 }
 
+// getClassesByNameAndPhoneNum is the handler to get classes by name and phone number.
 func getClassesByNameAndPhoneNum(c *gin.Context) {
 	var (
 		err     error
@@ -94,6 +96,7 @@ func getClassesByNameAndPhoneNum(c *gin.Context) {
 	log.Printf("name: %v, phone num: %v, classes: %v", name, phoneNum, classes)
 }
 
+// getAvailablePeriods is the handler to get available periods by class string.
 func getAvailablePeriods(c *gin.Context) {
 	var (
 		err     error
@@ -153,6 +156,7 @@ func getAvailablePeriods(c *gin.Context) {
 	log.Printf("class value: %v, campusPeriods: %v", classValue, campusPeriods)
 }
 
+// postRequest is the handler of transfer request.
 func postRequest(c *gin.Context) {
 	var (
 		err     error
