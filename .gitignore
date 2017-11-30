@@ -7,6 +7,7 @@
 !*.md
 !*.go
 !*.json
+!*.yml
 config.json
 blacklist.json
 !*.tmpl
