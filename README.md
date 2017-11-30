@@ -33,6 +33,9 @@ zb是一个基于[明日系统导出至redis中的学校数据](https://github.c
 * API服务器，应用服务器作为系统服务自动启动
   * [Configure Binary as systemd Service on CentOS 7](https://github.com/northbright/Notes/blob/master/Linux/CentOS/service/config-binary-as-systemd-service-on-centos-7/config-binary-as-systemd-service-on-centos-7.md)
 
+* 如果使用新购的aliyun的ECS，外网不能访问80端口的解决方法
+  * [外网不能访问Aliyun ECS(阿里云)上的HTTP服务器](https://github.com/northbright/Notes/blob/master/aliyun/can-not-access-http-server-on-aliyun-ecs.md)
+
 #### Documentation
 * [API References](https://godoc.org/github.com/shchnmz/zb)
 
