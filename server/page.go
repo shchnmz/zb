@@ -27,7 +27,7 @@ func admin(c *gin.Context) {
 		})
 	}()
 
-	db := &zb.DB{ming.DB{redisAddr, redisPassword}}
+	db := &zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
 	records, err := db.GetAllRecords()
 	if err != nil {
 		return

@@ -12,43 +12,43 @@ import (
 )
 
 var (
-	redisAddr     = ":6379"
-	redisPassword = ""
 	serverRoot    = ""
 	templatesPath = ""
 	staticPath    = ""
 	configFile    = ""
+	config        Config
 )
 
+// Config represents the app settings.
 type Config struct {
-	AdminAccount  string
-	AdminPassword string
+	ServerAddr    string `json:"server_addr"`
+	RedisServer   string `json:"redis_server"`
+	RedisPassword string `json:"redis_password"`
+	AdminAccount  string `json:"admin_account"`
+	AdminPassword string `json:"admin_password"`
 }
 
 func main() {
-	var err error
-	var authorized *gin.RouterGroup
-	buf := []byte{}
-	config := Config{}
+	var (
+		err        error
+		authorized *gin.RouterGroup
+	)
 
-	r := gin.Default()
+	defer func() {
+		if err != nil {
+			log.Printf("%v", err)
+		}
+	}()
 
 	serverRoot, _ = pathhelper.GetCurrentExecDir()
 	templatesPath = path.Join(serverRoot, "templates")
 	staticPath = path.Join(serverRoot, "static")
 
-	configFile = path.Join(serverRoot, "config.json")
-
-	// Load Conifg
-	if buf, err = ioutil.ReadFile(configFile); err != nil {
-		log.Printf("Load config file error: %v\n", err)
-		goto end
+	if err = loadConfig("config.json", &config); err != nil {
+		return
 	}
 
-	if err = json.Unmarshal(buf, &config); err != nil {
-		log.Printf("Parse config err: %v\n", err)
-		goto end
-	}
+	r := gin.Default()
 
 	// Serve Static files.
 	r.Static("/static/", staticPath)
@@ -63,12 +63,23 @@ func main() {
 	}))
 	authorized.GET("/admin", admin)
 
-	//r.POST("/zb", postZB)
+	r.Run(config.ServerAddr)
+}
 
-	r.Run(":8080")
-end:
-	if err != nil {
-		log.Printf("main() error: %v\n", err)
-		return
+func loadConfig(file string, config *Config) error {
+	var (
+		err        error
+		buf        []byte
+		currentDir string
+	)
+
+	currentDir, _ = pathhelper.GetCurrentExecDir()
+	file = path.Join(currentDir, file)
+
+	// Load Conifg
+	if buf, err = ioutil.ReadFile(file); err != nil {
+		return err
 	}
+
+	return json.Unmarshal(buf, &config)
 }
