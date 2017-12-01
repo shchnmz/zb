@@ -31,7 +31,7 @@ load-blacklist-from-file是一个从配置文件中加载转班禁止信息到re
      班级格式为:`$校区:$课程:$班级`。 e.g. "校区B:二年级:二年级3班"。 
 
 #### 如何使用
-1. 确认已经运行过[ming800-to-redis](../ming800-to-redis)将明日系统的数据导入到redis中。
+1. 确认已经运行过[ming800-to-redis](https://github.com/shchnmz/ming/tree/master/tools/ming800-to-redis)将明日系统的数据导入到redis中。
 
 2. 在和可执行文件相同的文件夹下，创建一个`config.json`的配置文件：
 
