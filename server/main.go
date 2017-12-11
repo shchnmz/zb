@@ -63,6 +63,7 @@ func main() {
 		config.AdminAccount: config.AdminPassword,
 	}))
 	authorized.GET("/admin", admin)
+	authorized.GET("/statistics", statistics)
 
 	r.Run(config.ServerAddr)
 }

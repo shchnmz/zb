@@ -1,11 +1,12 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/northbright/maphelper"
 	"github.com/shchnmz/ming"
 	"github.com/shchnmz/zb"
 )
@@ -52,4 +53,84 @@ func admin(c *gin.Context) {
 		"count":   len(records),
 		"records": records,
 	})
+}
+
+func statistics(c *gin.Context) {
+	var (
+		err   error
+		items []string
+	)
+
+	defer func() {
+		if err != nil {
+			c.HTML(http.StatusOK, "error.tmpl", gin.H{
+				"title": "转班申请系统错误",
+			})
+			log.Printf("statistics() error: %v", err)
+			return
+		}
+
+		c.HTML(http.StatusOK, "statistics.tmpl", gin.H{
+			"title": "转班统计",
+			"items": items,
+		})
+	}()
+
+	db := &zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
+	s, err := db.GetStatistics()
+	if err != nil {
+		return
+	}
+
+	items = append(items, "--------------------------")
+	items = append(items, "按校区统计:")
+	items = append(items, "--------------------------")
+
+	keys, err := maphelper.SortMapByValues(s.StudentNumOfEachCampus, true)
+	if err != nil {
+		return
+	}
+
+	for _, key := range keys {
+		items = append(items, fmt.Sprintf("%v: %v人\n", key, s.StudentNumOfEachCampus[key]))
+	}
+
+	items = append(items, "--------------------------")
+	items = append(items, "按年级统计:")
+	items = append(items, "--------------------------")
+
+	keys, err = maphelper.SortMapByValues(s.StudentNumOfEachCategory, true)
+	if err != nil {
+		return
+	}
+
+	for _, key := range keys {
+		items = append(items, fmt.Sprintf("%v: %v人\n", key, s.StudentNumOfEachCategory[key]))
+	}
+
+	items = append(items, "--------------------------")
+	items = append(items, "按教师转班率统计:")
+	items = append(items, "--------------------------")
+
+	keys, err = maphelper.SortMapByValues(s.StudentPercentOfEachTeacher, true)
+	if err != nil {
+		return
+	}
+
+	for _, key := range keys {
+		items = append(items, fmt.Sprintf("%v: %.2f%%\n", key, s.StudentPercentOfEachTeacher[key]))
+	}
+
+	items = append(items, "--------------------------")
+	items = append(items, "按教师统计:")
+	items = append(items, "--------------------------")
+
+	keys, err = maphelper.SortMapByValues(s.StudentNumOfEachTeacher, true)
+	if err != nil {
+		return
+	}
+
+	for _, key := range keys {
+		items = append(items, fmt.Sprintf("%v: %v人\n", key, s.StudentNumOfEachTeacher[key]))
+	}
 }
