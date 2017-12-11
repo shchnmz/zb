@@ -2,7 +2,7 @@ package main
 
 import (
 	//"fmt"
-	//"log"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,25 +11,44 @@ import (
 )
 
 func home(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"title": "转班申请",
-	})
+	db := &zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
+
+	enabled, err := db.IsEnabled()
+	if err != nil {
+		c.HTML(http.StatusOK, "error.tmpl", gin.H{
+			"title": "转班申请系统错误",
+		})
+		log.Printf("home() db.IsEnabled() error: %v", err)
+		return
+	}
+
+	if !enabled {
+		c.HTML(http.StatusOK, "disabled.tmpl", gin.H{
+			"title": "转班已经截止",
+		})
+	} else {
+
+		c.HTML(http.StatusOK, "index.tmpl", gin.H{
+			"title": "转班申请",
+		})
+	}
 }
 
 func admin(c *gin.Context) {
-	var records []zb.Record
-
-	defer func() {
-		c.HTML(http.StatusOK, "admin.tmpl", gin.H{
-			"title":   "转班申请",
-			"count":   len(records),
-			"records": records,
-		})
-	}()
-
 	db := &zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
+
 	records, err := db.GetAllRecords()
 	if err != nil {
+		c.HTML(http.StatusOK, "error.tmpl", gin.H{
+			"title": "转班申请系统错误",
+		})
+		log.Printf("admin() db.GetAllRecord() error: %v", err)
 		return
 	}
+
+	c.HTML(http.StatusOK, "admin.tmpl", gin.H{
+		"title":   "转班申请",
+		"count":   len(records),
+		"records": records,
+	})
 }
