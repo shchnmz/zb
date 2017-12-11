@@ -42,6 +42,14 @@ type Record struct {
 	Time       string `redis:"time"`
 }
 
+// Statistics represents the statistics of student transfer.
+type Statistics struct {
+	StudentNumOfEachCampus      map[string]int
+	StudentNumOfEachCategory    map[string]int
+	StudentNumOfEachTeacher     map[string]int
+	StudentPercentOfEachTeacher map[string]float32
+}
+
 var (
 	blacklistTypes = map[string]string{
 		"from_campuses": "can't transfer students from the campuses",
@@ -420,4 +428,55 @@ func (db *DB) IsEnabled() (bool, error) {
 		return false, nil
 	}
 	return enabled, nil
+}
+
+// GetStatistics returns the statistics of student transfer.
+func (db *DB) GetStatistics() (Statistics, error) {
+	records, err := db.GetAllRecords()
+	if err != nil {
+		return Statistics{}, err
+	}
+
+	// Initialize maps of Statistics.
+	s := Statistics{}
+	s.StudentNumOfEachCampus = map[string]int{}
+	s.StudentNumOfEachCategory = map[string]int{}
+	s.StudentNumOfEachTeacher = map[string]int{}
+	s.StudentPercentOfEachTeacher = map[string]float32{}
+
+	// Walk all transfer records.
+	for _, record := range records {
+		// Compute the student number of "from campus -> to campus".
+		// key name: from campus + "转入" + to campus.
+		key := fmt.Sprintf("%v 转入 %v", record.FromCampus, record.ToCampus)
+		s.StudentNumOfEachCampus[key] += 1
+
+		// Compute the student number of each category.
+		s.StudentNumOfEachCategory[record.Category] += 1
+		teachers, err := db.GetTeachersOfClass(record.FromCampus, record.Category, record.FromClass)
+		if err != nil {
+			return Statistics{}, err
+		}
+
+		// Compute the student number of each teacher.
+		for _, teacher := range teachers {
+			s.StudentNumOfEachTeacher[teacher] += 1
+		}
+	}
+
+	// Compute the percent = transfer student number / all students of each teacher.
+	for teacher, num := range s.StudentNumOfEachTeacher {
+		students, err := db.GetStudentsOfTeacher(teacher)
+		if err != nil {
+			return Statistics{}, err
+		}
+
+		allNum := len(students)
+		if allNum > 0 {
+			percent := float32(num) * 100 / float32(allNum)
+			s.StudentPercentOfEachTeacher[teacher] = percent
+		}
+	}
+
+	return s, nil
 }
