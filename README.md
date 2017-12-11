@@ -39,6 +39,9 @@ zb是一个基于[明日系统导出至redis中的学校数据](https://github.c
 * 如果使用新购的aliyun的ECS，外网不能访问80端口的解决方法
   * [外网不能访问Aliyun ECS(阿里云)上的HTTP服务器](https://github.com/northbright/Notes/blob/master/aliyun/can-not-access-http-server-on-aliyun-ecs.md)
 
+#### Requirements
+* Go1.8 and later
+
 #### Documentation
 * [API References](https://godoc.org/github.com/shchnmz/zb)
 
