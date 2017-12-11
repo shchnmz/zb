@@ -14,9 +14,11 @@
 
 <div data-role="page" id="page1">
   <div data-role="header">
-    <h1>转班申请已经截止，详细情况请至报名处询问</h1>
   </div>
 
   <div data-role="content">
+    {{range .notices }}
+      <div>{{ . }}</div>
+    {{end}}
   </div>
 </div>

@@ -21,11 +21,12 @@ var (
 
 // Config represents the app settings.
 type Config struct {
-	ServerAddr    string `json:"server_addr"`
-	RedisServer   string `json:"redis_server"`
-	RedisPassword string `json:"redis_password"`
-	AdminAccount  string `json:"admin_account"`
-	AdminPassword string `json:"admin_password"`
+	ServerAddr    string   `json:"server_addr"`
+	RedisServer   string   `json:"redis_server"`
+	RedisPassword string   `json:"redis_password"`
+	AdminAccount  string   `json:"admin_account"`
+	AdminPassword string   `json:"admin_password"`
+	ClosedNotices []string `json:"closed_notices"`
 }
 
 func main() {

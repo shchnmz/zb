@@ -23,8 +23,9 @@ func home(c *gin.Context) {
 	}
 
 	if !enabled {
-		c.HTML(http.StatusOK, "disabled.tmpl", gin.H{
-			"title": "转班已经截止",
+		c.HTML(http.StatusOK, "closed.tmpl", gin.H{
+			"title":   "转班已经截止",
+			"notices": config.ClosedNotices,
 		})
 	} else {
 
