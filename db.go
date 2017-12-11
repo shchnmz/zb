@@ -367,7 +367,7 @@ func (db *DB) GetAllRecords() ([]Record, error) {
 		return []Record{}, err
 	}
 
-	log.Printf("keys: %v", keys)
+	//log.Printf("keys: %v", keys)
 	for _, key := range keys {
 		values, err := redis.Values(conn.Do("HGETALL", key))
 		if err != nil {
