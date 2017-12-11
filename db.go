@@ -385,3 +385,33 @@ func (db *DB) GetAllRecords() ([]Record, error) {
 	}
 	return records, nil
 }
+
+// Enable sets the flag to enable / disable transfer operation.
+func (db *DB) Enable(flag bool) error {
+	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	k := "zb:enabled"
+	v := 0
+	if flag {
+		v = 1
+	}
+
+	_, err = conn.Do("SET", k, v)
+	return err
+}
+
+// IsEnabled gets the status if transfer operation is enabled.
+func (db *DB) IsEnabled() (bool, error) {
+	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	if err != nil {
+		return false, err
+	}
+	defer conn.Close()
+
+	k := "zb:enabled"
+	return redis.Bool(conn.Do("GET", k))
+}
