@@ -413,5 +413,11 @@ func (db *DB) IsEnabled() (bool, error) {
 	defer conn.Close()
 
 	k := "zb:enabled"
-	return redis.Bool(conn.Do("GET", k))
+	enabled, err := redis.Bool(conn.Do("GET", k))
+	if err != nil && err != redis.ErrNil {
+		return false, err
+	} else if err == redis.ErrNil {
+		return false, nil
+	}
+	return enabled, nil
 }
