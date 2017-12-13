@@ -136,37 +136,14 @@ func statistics(c *gin.Context) {
 }
 
 func enable(c *gin.Context) {
-	var (
-		err     error
-		enabled bool
-	)
-
-	defer func() {
-		if err != nil {
-			c.HTML(http.StatusOK, "error.tmpl", gin.H{
-				"title": "转班申请系统错误",
-			})
-			log.Printf("enable() error: %v", err)
-			return
-		}
-
-		c.HTML(http.StatusOK, "enable.tmpl", gin.H{
-			"title":   "允许转班",
-			"enabled": enabled,
-		})
-	}()
-
-	db := &zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
-	if err = db.Enable(true); err != nil {
-		return
-	}
-
-	if enabled, err = db.IsEnabled(); err != nil {
-		return
-	}
+	enableHandler(c, true)
 }
 
 func disable(c *gin.Context) {
+	enableHandler(c, false)
+}
+
+func enableHandler(c *gin.Context, flag bool) {
 	var (
 		err     error
 		enabled bool
@@ -177,7 +154,7 @@ func disable(c *gin.Context) {
 			c.HTML(http.StatusOK, "error.tmpl", gin.H{
 				"title": "转班申请系统错误",
 			})
-			log.Printf("disable() error: %v", err)
+			log.Printf("enableHandler() error: %v", err)
 			return
 		}
 
@@ -188,7 +165,7 @@ func disable(c *gin.Context) {
 	}()
 
 	db := &zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
-	if err = db.Enable(false); err != nil {
+	if err = db.Enable(flag); err != nil {
 		return
 	}
 
