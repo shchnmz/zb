@@ -36,7 +36,7 @@ server是提供转班服务以及管理的HTTP服务器。它是使用[Golang](h
 
 * 管理员访问
 
-需要config.json中的`"admin_account"`和`"admin_password"`来进行HTTP Basic Auth进行查看。
+  需要config.json中的`"admin_account"`和`"admin_password"`来进行HTTP Basic Auth进行查看。
   * `/admin`
 
     管理员查看所有转班申请记录。
