@@ -64,6 +64,8 @@ func main() {
 	}))
 	authorized.GET("/admin", admin)
 	authorized.GET("/statistics", statistics)
+	authorized.GET("/enable", enable)
+	authorized.GET("/disable", disable)
 
 	r.Run(config.ServerAddr)
 }

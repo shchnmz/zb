@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ .title }}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel='stylesheet' id='style-css'  href='static/css/jquery.mobile-1.4.5.min.css' media='all' />
+  <link rel='stylesheet' id='style-css'  href='static/css/zb.css' media='all' />
+  <script type="text/javascript" src="static/js/jquery-1.12.1.min.js"></script>
+  <script type="text/javascript" src="static/js/jquery.mobile-1.4.5.min.js"></script>
+  <script type="text/javascript" src="static/js/zb.js"></script>
+</head>
+<body>
+
+<div data-role="page" id="page1">
+  <div data-role="header">
+  </div>
+
+  <div data-role="content">
+      <div>允许转班: {{ .enabled }}</div>
+  </div>
+</div>
