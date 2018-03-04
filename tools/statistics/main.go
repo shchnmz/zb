@@ -20,7 +20,8 @@ type Config struct {
 }
 
 var (
-	config Config
+	currentDir, configFile string
+	config                 Config
 )
 
 func main() {
@@ -34,7 +35,7 @@ func main() {
 		}
 	}()
 
-	if err = loadConfig("config.json", &config); err != nil {
+	if err = loadConfig(configFile, &config); err != nil {
 		return
 	}
 
@@ -43,22 +44,26 @@ func main() {
 	}
 }
 
-func loadConfig(file string, config *Config) error {
-	var (
-		err        error
-		buf        []byte
-		currentDir string
-	)
-
+// init initializes path variables.
+func init() {
 	currentDir, _ = pathhelper.GetCurrentExecDir()
-	file = path.Join(currentDir, file)
+	configFile = path.Join(currentDir, "config.json")
+}
 
+// loadConfig loads app config.
+func loadConfig(configFile string, config *Config) error {
 	// Load Conifg
-	if buf, err = ioutil.ReadFile(file); err != nil {
-		return err
+	buf, err := ioutil.ReadFile(configFile)
+	if err != nil {
+		return fmt.Errorf("load config file error: %v", err)
+
 	}
 
-	return json.Unmarshal(buf, &config)
+	if err = json.Unmarshal(buf, config); err != nil {
+		return fmt.Errorf("parse config err: %v", err)
+	}
+
+	return nil
 }
 
 func getStatistics(redisServer, redisPassword string) error {

@@ -37,7 +37,7 @@ func main() {
 		}
 	}()
 
-	if err = loadConfig(); err != nil {
+	if err = loadConfig(configFile, &config); err != nil {
 		err = fmt.Errorf("loadConfig() error: %v", err)
 		return
 	}
@@ -71,7 +71,7 @@ func init() {
 }
 
 // loadConfig loads app config.
-func loadConfig() error {
+func loadConfig(configFile string, config *Config) error {
 	// Load Conifg
 	buf, err := ioutil.ReadFile(configFile)
 	if err != nil {
@@ -79,7 +79,7 @@ func loadConfig() error {
 
 	}
 
-	if err = json.Unmarshal(buf, &config); err != nil {
+	if err = json.Unmarshal(buf, config); err != nil {
 		return fmt.Errorf("parse config err: %v", err)
 	}
 
