@@ -139,22 +139,23 @@ func ValidBlacklist(blacklist map[string][]string) bool {
 //       There're following types of blacklist:
 //       "from_campuses", "from_periods", "from_classes",
 //       "to_campuses", "to_periods", "to_classes".
-//       Example blacklist.json:
-//       {
-//         "blacklist": {
-//           "from_campuses":["新校区"],
-//           "from_periods":[],
-//           "from_classes":[
-//             "新校区:二年级:17秋新基二三1",
-//             "新校区:二年级:17秋新基二三2"
-//           ],
-//           "to_campuses":["新校区"],
-//           "to_periods": [
-//             "老校区:幼中:星期二16:25-17:55",
-//             "老校区:幼中:星期三16:25-17:55",,
-//             "to_classes":[]
-//         }
-//       }
+//  Example blacklist.json:
+//  {
+//    "blacklist": {
+//      "from_campuses":["校区C"],
+//      "from_periods":[],
+//      "from_classes":[
+//        "校区A:二年级:17秋新基二三1",
+//        "校区B:四年级:17秋新素零1"
+//      ],
+//      "to_campuses":["校区C"],
+//      "to_periods":[
+//        "校区A:幼中:星期二16:25-17:55",
+//        "校区B:一年级:星期日13:00-14:45"
+//      ],
+//      "to_classes":[]
+//    }
+// }
 func (db *DB) LoadBlacklist(file string, blacklist *Blacklist) error {
 	var (
 		err        error
