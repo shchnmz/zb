@@ -40,7 +40,7 @@ func main() {
 	}
 
 	db := zb.DB{ming.DB{config.RedisServer, config.RedisPassword}}
-	if err = db.LoadBlacklist("blacklist.json", &blacklist); err != nil {
+	if err = db.LoadBlacklistFromJSON("blacklist.json", &blacklist); err != nil {
 		return
 	}
 }

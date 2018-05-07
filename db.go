@@ -132,7 +132,7 @@ func ValidBlacklist(blacklist map[string][]string) bool {
 	return true
 }
 
-// LoadBlacklist loads the blacklist from JSON file then set it to redis.
+// LoadBlacklistFromJSON loads the blacklist from JSON file then set it to redis.
 //
 // Params:
 //     file: JSON file name.
@@ -156,7 +156,7 @@ func ValidBlacklist(blacklist map[string][]string) bool {
 //      "to_classes":[]
 //    }
 // }
-func (db *DB) LoadBlacklist(file string, blacklist *Blacklist) error {
+func (db *DB) LoadBlacklistFromJSON(file string, blacklist *Blacklist) error {
 	var (
 		err        error
 		buf        []byte
