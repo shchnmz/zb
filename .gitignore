@@ -8,8 +8,15 @@
 !*.go
 !*.json
 !*.yml
+!*.txt
 config.json
 blacklist.json
+from_campuses.txt
+from_periods.txt
+from_classes.txt
+to_campuses.txt
+to_periods.txt
+to_classes.txt
 !*.tmpl
 # For HTML
 !*.html
