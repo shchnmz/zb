@@ -42,6 +42,10 @@ load-blacklist-from-json是一个从配置文件中加载转班禁止信息到re
 
 * `"redis_server"`,`"redis_password"`是同步的redis的地址和密码。
 
-3. 运行`load-blacklist-from-json`
+3. 确认在和可执行文件相同文件夹下，`blacklist.json`配置文件已经配置好
+   * 方法1: 在和可执行文件相同文件夹下，手动创建1个`blacklist.json`
+   * 方法2: 使用[gen-blacklist-json-from-txt](../gen-blacklist-json-from-txt)从TXT文本中生成`blacklist.json`
+
+4. 运行`load-blacklist-from-json`
 
         ./load-blacklist-from-json
