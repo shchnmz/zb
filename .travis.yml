@@ -25,4 +25,5 @@ script:
   - cd server && go build && cd ../
   - cd tools/clear-blacklist && go build && cd ../../
   - cd tools/load-blacklist-from-json && go build && cd ../../
+  - cd tools/gen-blacklist-json-from-txt && go build && cd ../../
   - cd tools/statistics && go build && cd ../../
