@@ -24,7 +24,7 @@ type DB struct {
 	ming.DB
 }
 
-// Blacklist represents the blacklist of student transter.
+// Blacklist represents the blacklist of student transfer.
 type Blacklist struct {
 	List map[string][]string `json:"blacklist"`
 }
