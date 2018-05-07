@@ -51,7 +51,7 @@ type Statistics struct {
 }
 
 var (
-	blacklistTypes = map[string]string{
+	BlacklistTypes = map[string]string{
 		"from_campuses": "can't transfer students from the campuses",
 		"from_periods":  "can't transfer students from the periods",
 		"from_classes":  "can't transfer students from classes",
@@ -110,7 +110,7 @@ func (db *DB) ClearBlacklist() error {
 
 	pipedConn.Send("MULTI")
 
-	for k := range blacklistTypes {
+	for k := range BlacklistTypes {
 		key := fmt.Sprintf("zb:blacklist:%v", k)
 		pipedConn.Send("DEL", key)
 	}
@@ -125,7 +125,7 @@ func (db *DB) ClearBlacklist() error {
 // ValidBlacklist validates the backlist.
 func ValidBlacklist(blacklist map[string][]string) bool {
 	for k := range blacklist {
-		if _, ok := blacklistTypes[k]; !ok {
+		if _, ok := BlacklistTypes[k]; !ok {
 			return false
 		}
 	}
