@@ -1,6 +1,6 @@
-# load-blacklist-from-file
+# load-blacklist-from-json
 
-load-blacklist-from-file是一个从配置文件中加载转班禁止信息到redis中的程序。它是使用[Golang](https://golang.org)写的。
+load-blacklist-from-json是一个从配置文件中加载转班禁止信息到redis中的程序。它是使用[Golang](https://golang.org)写的。
 
 #### 转班禁止配置文件以及格式
 * 在和可执行文件相同文件夹下，创建一个`blacklist.json`的配置文件:
@@ -42,6 +42,6 @@ load-blacklist-from-file是一个从配置文件中加载转班禁止信息到re
 
 * `"redis_server"`,`"redis_password"`是同步的redis的地址和密码。
 
-3. 运行`load-blacklist-from-file`
+3. 运行`load-blacklist-from-json`
 
-        ./load-blacklist-from-file
+        ./load-blacklist-from-json
