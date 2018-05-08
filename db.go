@@ -395,6 +395,34 @@ func (db *DB) GetAllRecords() ([]Record, error) {
 	return records, nil
 }
 
+// ClearAllRecords clears all records in redis.
+func (db *DB) ClearAllRecords() error {
+	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	if err != nil {
+		return err
+	}
+	defer conn.Close()
+
+	k := "zb:records"
+	keys, err := redis.Strings(conn.Do("ZRANGE", k, 0, -1))
+	if err != nil {
+		return err
+	}
+
+	conn.Send("MULTI")
+	for _, key := range keys {
+		conn.Send("DEL", key)
+	}
+
+	conn.Send("DEL", k)
+
+	if _, err = conn.Do("EXEC"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // Enable sets the flag to enable / disable transfer operation.
 func (db *DB) Enable(flag bool) error {
 	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
