@@ -1,0 +1,4 @@
+{
+    "redis_server":":6379",
+    "redis_password":""
+}
