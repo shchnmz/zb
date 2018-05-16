@@ -131,7 +131,15 @@ func statistics(c *gin.Context) {
 	}
 
 	for _, key := range keys {
-		items = append(items, fmt.Sprintf("%v: %v人\n", key, s.StudentNumOfEachTeacher[key]))
+		items = append(items, fmt.Sprintf("\n%v: %v人\n", key, s.StudentNumOfEachTeacher[key]))
+		i := 1
+		for class, _ := range s.ClassesOfEachTeacher[key] {
+			items = append(items, fmt.Sprintf("(%v).%v:\n", i, class))
+			for period, num := range s.StudentNumOfEachToPeriod[class] {
+				items = append(items, fmt.Sprintf("-->%v: %v人\n", period, num))
+			}
+			i++
+		}
 	}
 }
 

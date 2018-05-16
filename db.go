@@ -48,6 +48,13 @@ type Statistics struct {
 	StudentNumOfEachCategory    map[string]int
 	StudentNumOfEachTeacher     map[string]int
 	StudentPercentOfEachTeacher map[string]float32
+	// ClassesOfEachTeacher stores the classes belongs to the same teacher.
+	// key: teacher, value: a map(set) stores classes in the format:
+	// campus:category:class:period.
+	ClassesOfEachTeacher map[string]map[string]bool
+	// StudentNumOfEachToPeriod stores student number of each to_period.
+	// key: campus:category:class:period, value: a map stores student number for each to_period.
+	StudentNumOfEachToPeriod map[string]map[string]int
 }
 
 var (
@@ -472,6 +479,8 @@ func (db *DB) GetStatistics() (Statistics, error) {
 	s.StudentNumOfEachCategory = map[string]int{}
 	s.StudentNumOfEachTeacher = map[string]int{}
 	s.StudentPercentOfEachTeacher = map[string]float32{}
+	s.ClassesOfEachTeacher = map[string]map[string]bool{}
+	s.StudentNumOfEachToPeriod = map[string]map[string]int{}
 
 	// Walk all transfer records.
 	for _, record := range records {
@@ -482,14 +491,49 @@ func (db *DB) GetStatistics() (Statistics, error) {
 
 		// Compute the student number of each category.
 		s.StudentNumOfEachCategory[record.Category] += 1
-		teachers, err := db.GetTeachersOfClass(record.FromCampus, record.Category, record.FromClass)
+		teachers, err := db.GetTeachersOfClass(
+			record.FromCampus,
+			record.Category,
+			record.FromClass,
+		)
 		if err != nil {
 			return Statistics{}, err
 		}
 
+		// Get period of class.
+		period, err := db.GetClassPeriod(
+			record.FromCampus,
+			record.Category,
+			record.FromClass,
+		)
+		if err != nil {
+			return Statistics{}, err
+		}
+
+		// Full class info with campus, category, period.
+		class := fmt.Sprintf("%v:%v:%v:%v",
+			record.FromCampus,
+			record.Category,
+			record.FromClass,
+			period,
+		)
+
+		if _, ok := s.StudentNumOfEachToPeriod[class]; !ok {
+			s.StudentNumOfEachToPeriod[class] = map[string]int{}
+		}
+
+		s.StudentNumOfEachToPeriod[class][record.ToPeriod] += 1
+
 		// Compute the student number of each teacher.
 		for _, teacher := range teachers {
 			s.StudentNumOfEachTeacher[teacher] += 1
+
+			// key: teacher, value: classes set.
+			if _, ok := s.ClassesOfEachTeacher[teacher]; !ok {
+				s.ClassesOfEachTeacher[teacher] = map[string]bool{}
+			}
+
+			s.ClassesOfEachTeacher[teacher][class] = true
 		}
 	}
 
