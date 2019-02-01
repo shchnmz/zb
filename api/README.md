@@ -19,3 +19,60 @@ api是提供转班服务API的HTTP服务器。它是使用[Golang](https://golan
 3. 运行`api`
 
         ./api
+
+
+## API文档 
+
+#### 根据手机号码获取绑定的学生
+返回手机号码绑定的学生姓名列表。
+一个手机号码可以绑定多个学生。
+
+    GET /api/get-names-by-phone-num/:phone_num
+
+    status: 200 OK
+
+    {
+        "success":true,
+        "err_msg":"",
+        "names":[
+            "学生A",
+            "学生B"
+        ]
+    }
+
+#### 根据学生信息（姓名，手机号码的组合）获取学生就读班级
+返回学生（姓名，手机号码）所就读的班级信息列表。
+一个学生可以就读多个班级。
+班级信息的格式：`校区:课程:班级`。e.g. `校区A:一年级绘画课程:一年级（1）班`
+
+    GET /api/get-classes-by-name-and-phone-num/:name/:phone_num
+
+    status: 200 OK
+
+    {
+        "success":true，
+        "err_msg":"",
+        "classes":[
+            "校区A:二年级:二年级6",
+            "校区A:2018暑假零基础班:18暑新二三年级3"
+        ]
+    }
+
+#### 根据班级信息获取授课教师
+返回班级的授课教师姓名列表。
+一个班级可以有多个授课教师。
+班级信息的格式：`校区:课程:班级`。e.g. `校区A:一年级绘画课程:一年级（1）班`
+
+    GET /api/get-teachers-by-class/:class
+
+    status: 200 OK
+
+    {
+        "success":true,
+        "err_msg":"",
+        "teachers":[
+            "教师A",
+            "教师B",
+        ]
+    }
+
