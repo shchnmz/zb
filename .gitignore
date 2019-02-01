@@ -25,4 +25,7 @@ to_classes.txt
 !*.jpg
 !*.png
 !*.gif
-
+# Ignore blacklists
+tools/gen-blacklist-json-from-txt/*/
+!tools/gen-blacklist-json-from-txt/blacklist/
+tools/gen-blacklist-json-from-txt/blacklist/*/
