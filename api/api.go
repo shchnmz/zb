@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -94,6 +95,50 @@ func getClassesByNameAndPhoneNum(c *gin.Context) {
 
 	success = true
 	log.Printf("name: %v, phone num: %v, classes: %v", name, phoneNum, classes)
+}
+
+// getTeachersByClass is the handler to get teachers by class name.
+func getTeachersByClass(c *gin.Context) {
+	var (
+		err      error
+		success  = false
+		errMsg   = ""
+		teachers []string
+	)
+
+	defer func() {
+		if err != nil {
+			log.Printf("getTeachersByClass() err: %v", err)
+		}
+
+		if errMsg != "" {
+			log.Printf("getTeachersByClass() errMsg: %v", errMsg)
+		}
+
+		c.JSON(200, gin.H{"success": success, "err_msg": errMsg, "teachers": teachers})
+	}()
+
+	classWithCampusAndCategory := c.Param("class")
+	if len(classWithCampusAndCategory) == 0 {
+		errMsg = "班级为空"
+		return
+	}
+
+	arr := strings.Split(classWithCampusAndCategory, ":")
+	if len(arr) != 3 {
+		errMsg = "班级格式错误"
+		return
+	}
+	campus := arr[0]
+	category := arr[1]
+	class := arr[2]
+
+	if teachers, err = db.GetTeachersOfClass(campus, category, class); err != nil {
+		return
+	}
+
+	success = true
+	log.Printf("campus: %v, category: %v, class: %v, teachers: %v", campus, category, class, teachers)
 }
 
 // getAvailablePeriods is the handler to get available periods by class string.

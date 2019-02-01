@@ -55,6 +55,9 @@ func main() {
 	// Get classes by name and phone num.
 	r.GET("/api/get-classes-by-name-and-phone-num/:name/:phone_num", getClassesByNameAndPhoneNum)
 
+	// Get teachers by class(with campus and category).
+	r.GET("/api/get-teachers-by-class/:class", getTeachersByClass)
+
 	// Get available periods for the category of the class.
 	r.GET("/api/get-available-periods/:class", getAvailablePeriods)
 
