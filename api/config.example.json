@@ -1,0 +1,5 @@
+{
+    "server_addr": ":8000",
+    "redis_server": "localhost:6379",
+    "redis_password": ""
+}
