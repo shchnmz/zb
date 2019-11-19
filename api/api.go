@@ -119,6 +119,10 @@ func getTeachersByClass(c *gin.Context) {
 	}()
 
 	classWithCampusAndCategory := c.Param("class")
+	// Use "*" for wildcard param when class contains "/". e.g.(一年级（1）班，11/10日开学).
+	// Need to trim "/" for class name.
+	classWithCampusAndCategory = strings.TrimLeft(classWithCampusAndCategory, "/")
+	classWithCampusAndCategory = strings.TrimRight(classWithCampusAndCategory, "/")
 	if len(classWithCampusAndCategory) == 0 {
 		errMsg = "班级为空"
 		return
@@ -165,6 +169,10 @@ func getAvailablePeriods(c *gin.Context) {
 	}()
 
 	classValue := c.Param("class")
+	// Use "*" for wildcard param when class contains "/". e.g.(一年级（1）班，11/10日开学).
+	// Need to trim "/" for class name.
+	classValue = strings.TrimLeft(classValue, "/")
+	classValue = strings.TrimRight(classValue, "/")
 	if len(classValue) == 0 {
 		errMsg = "转出班级为空"
 		return

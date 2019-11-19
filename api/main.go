@@ -56,10 +56,12 @@ func main() {
 	r.GET("/api/get-classes-by-name-and-phone-num/:name/:phone_num", getClassesByNameAndPhoneNum)
 
 	// Get teachers by class(with campus and category).
-	r.GET("/api/get-teachers-by-class/:class", getTeachersByClass)
+	// Use "*" for wildcard param when class contains "/". e.g.(一年级（1）班，11/10日开学).
+	r.GET("/api/get-teachers-by-class/*class", getTeachersByClass)
 
 	// Get available periods for the category of the class.
-	r.GET("/api/get-available-periods/:class", getAvailablePeriods)
+	// Use "*" for wildcard param when class contains "/". e.g.(一年级（1）班，11/10日开学).
+	r.GET("/api/get-available-periods/*class", getAvailablePeriods)
 
 	// Post request.
 	r.POST("/api/request", postRequest)
