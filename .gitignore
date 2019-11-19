@@ -29,3 +29,4 @@ to_classes.txt
 tools/gen-blacklist-json-from-txt/*/
 !tools/gen-blacklist-json-from-txt/blacklist/
 tools/gen-blacklist-json-from-txt/blacklist/*/
+tools/load-blacklist-from-json/blacklist-old/
