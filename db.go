@@ -71,12 +71,13 @@ var (
 // SetBlacklist updates the backlist in redis.
 //
 // Params:
-//     blacklist:
-//       There're following types of blacklist:
-//       "from_campuses", "from_periods", "from_classes",
-//       "to_campuses", "to_periods", "to_classes".
+//
+//	blacklist:
+//	  There're following types of blacklist:
+//	  "from_campuses", "from_periods", "from_classes",
+//	  "to_campuses", "to_periods", "to_classes".
 func (db *DB) SetBlacklist(blacklist map[string][]string) error {
-	pipedConn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	pipedConn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return err
 	}
@@ -109,7 +110,7 @@ func (db *DB) SetBlacklist(blacklist map[string][]string) error {
 
 // ClearBlacklist clear the backlist in redis.
 func (db *DB) ClearBlacklist() error {
-	pipedConn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	pipedConn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return err
 	}
@@ -142,27 +143,28 @@ func ValidBlacklist(blacklist map[string][]string) bool {
 // LoadBlacklistFromJSON loads the blacklist from JSON file then set it to redis.
 //
 // Params:
-//     file: JSON file name.
-//       There're following types of blacklist:
-//       "from_campuses", "from_periods", "from_classes",
-//       "to_campuses", "to_periods", "to_classes".
-//  Example blacklist.json:
-//  {
-//    "blacklist": {
-//      "from_campuses":["校区C"],
-//      "from_periods":[],
-//      "from_classes":[
-//        "校区A:二年级:17秋新基二三1",
-//        "校区B:四年级:17秋新素零1"
-//      ],
-//      "to_campuses":["校区C"],
-//      "to_periods":[
-//        "校区A:幼中:星期二16:25-17:55",
-//        "校区B:一年级:星期日13:00-14:45"
-//      ],
-//      "to_classes":[]
-//    }
-// }
+//
+//	    file: JSON file name.
+//	      There're following types of blacklist:
+//	      "from_campuses", "from_periods", "from_classes",
+//	      "to_campuses", "to_periods", "to_classes".
+//	 Example blacklist.json:
+//	 {
+//	   "blacklist": {
+//	     "from_campuses":["校区C"],
+//	     "from_periods":[],
+//	     "from_classes":[
+//	       "校区A:二年级:17秋新基二三1",
+//	       "校区B:四年级:17秋新素零1"
+//	     ],
+//	     "to_campuses":["校区C"],
+//	     "to_periods":[
+//	       "校区A:幼中:星期二16:25-17:55",
+//	       "校区B:一年级:星期日13:00-14:45"
+//	     ],
+//	     "to_classes":[]
+//	   }
+//	}
 func (db *DB) LoadBlacklistFromJSON(file string, blacklist *Blacklist) error {
 	var (
 		err        error
@@ -188,7 +190,7 @@ func (db *DB) LoadBlacklistFromJSON(file string, blacklist *Blacklist) error {
 
 // IsFromClassInBlacklist checks if the class transfer from is in blacklist.
 func (db *DB) IsFromClassInBlacklist(campus, category, class string) (bool, error) {
-	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	conn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return false, err
 	}
@@ -242,7 +244,7 @@ func (db *DB) IsFromClassInBlacklist(campus, category, class string) (bool, erro
 
 // IsToPeriodInBlacklist checks if the period transfer to is in blacklist.
 func (db *DB) IsToPeriodInBlacklist(campus, category, period string) (bool, error) {
-	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	conn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return false, err
 	}
@@ -279,12 +281,15 @@ func (db *DB) IsToPeriodInBlacklist(campus, category, period string) (bool, erro
 // FilterToPeriodsOfCategoryWithBlacklist filters periods of the category in blacklist.
 //
 // Params:
-//     category: category of the periods.
-//     campusPeriods: map contains periods to filter. key: campus, value: periods.
+//
+//	category: category of the periods.
+//	campusPeriods: map contains periods to filter. key: campus, value: periods.
+//
 // Returns:
-//     filtered campus - periods map. key: campus, value: periods.
+//
+//	filtered campus - periods map. key: campus, value: periods.
 func (db *DB) FilterToPeriodsOfCategoryWithBlacklist(category string, campusPeriods map[string][]string) (map[string][]string, error) {
-	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	conn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return map[string][]string{}, err
 	}
@@ -325,9 +330,12 @@ func (db *DB) FilterToPeriodsOfCategoryWithBlacklist(category string, campusPeri
 // GetAvailblePeriodsOfCategory gets category's periods for all campuses, filtered with blacklist.
 //
 // Params:
-//     category: category which you want to get all periods.
+//
+//	category: category which you want to get all periods.
+//
 // Returns:
-//     a map contains all periods. key: campus, value: periods.
+//
+//	a map contains all periods. key: campus, value: periods.
 func (db *DB) GetAvailblePeriodsOfCategory(category string) (map[string][]string, error) {
 	// Get all periods of the category.
 	campusPeriods, err := db.GetAllPeriodsOfCategory(category)
@@ -345,7 +353,7 @@ func (db *DB) GetAvailblePeriodsOfCategory(category string) (map[string][]string
 
 // SetRecord sets the record in redis.
 func (db *DB) SetRecord(r Record) error {
-	pipedConn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	pipedConn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return err
 	}
@@ -371,7 +379,7 @@ func (db *DB) SetRecord(r Record) error {
 func (db *DB) GetAllRecords() ([]Record, error) {
 	var records []Record
 
-	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	conn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return []Record{}, err
 	}
@@ -404,7 +412,7 @@ func (db *DB) GetAllRecords() ([]Record, error) {
 
 // ClearAllRecords clears all records in redis.
 func (db *DB) ClearAllRecords() error {
-	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	conn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return err
 	}
@@ -432,7 +440,7 @@ func (db *DB) ClearAllRecords() error {
 
 // Enable sets the flag to enable / disable transfer operation.
 func (db *DB) Enable(flag bool) error {
-	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	conn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return err
 	}
@@ -450,7 +458,7 @@ func (db *DB) Enable(flag bool) error {
 
 // IsEnabled gets the status if transfer operation is enabled.
 func (db *DB) IsEnabled() (bool, error) {
-	conn, err := redishelper.GetRedisConn(db.RedisServer, db.RedisPassword)
+	conn, err := redishelper.Dial(db.RedisServer, db.RedisPassword)
 	if err != nil {
 		return false, err
 	}
