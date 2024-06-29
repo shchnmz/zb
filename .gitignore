@@ -1,32 +1,58 @@
-# Ignore all
+# Ignore All
 *
-# Unignore all sub dirs
+# Unignore All Sub dirs
 !*/
+
+# Unignore Files
+# --------------------------
+
+# gitignore itself
 !.gitignore
+
+# License
 !LICENSE
+
+# Markdown
 !*.md
+
+# Text
+!*.txt
+
+# Shell
+!*.sh
+
+# Golang
 !*.go
+!go.mod
+!go.sum
+
+# Configuration
 !*.json
 !*.yml
-!*.txt
+!*.yaml
+# Ignore config.json(dev or product env) for security purpose
+# You may use a config.example.json instead
 config.json
-blacklist.json
-from_campuses.txt
-from_periods.txt
-from_classes.txt
-to_campuses.txt
-to_periods.txt
-to_classes.txt
-!*.tmpl
-# For HTML
+
+# Cert
+!*.pem
+
+# HTML
 !*.html
 !*.js
 !*.css
 !*.jpg
 !*.png
 !*.gif
-# Ignore blacklists
-tools/gen-blacklist-json-from-txt/*/
-!tools/gen-blacklist-json-from-txt/blacklist/
-tools/gen-blacklist-json-from-txt/blacklist/*/
-tools/load-blacklist-from-json/blacklist-old/
+
+# PDF
+!*.pdf
+
+# CSV
+!*.csv
+
+# Vue dist
+/dist
+
+# Templates
+!*.tmpl
